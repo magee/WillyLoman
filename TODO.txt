@@ -1,0 +1,50 @@
+• Code-breaker starts game
+• Code-breaker submits guess
+• Code-breaker wins game
+• Code-breaker loses game
+• Code-breaker plays again
+• Code-breaker requests hint
+• Code-breaker saves score
+
+• app starts schedule
+• app reads input file
+• app provides error message if input file not found
+• app provides error message if a duplicate route is found
+• app creates adjacency matrix
+• app creates matrix with 9 rows
+• app creates matrix with 9 columns
+• app provides error message if matrix is not valid size
+• app doesn't allow travel the wrong way
+• app has distance of 5 between A and B
+• app has distance of 5 between A and D
+• app provides error message if matrix values are invalid
+• app calculates 9 distance from A-B-C
+• app calculates 5 distance from A-D
+• app calculates 13 distance from A-D-C
+• app calculates 22 distance from A-E-B-C-D
+• app calculates NO SUCH ROUTE distance from A-E-D
+• app calculates 2 number trips starting and ending at C with max 3 stops
+• app calculates 3 number trips starting at A and ending at C with exactly 4 stops
+• app calculates 9 as shortest trip from A to C
+• app calculates 9 as shortest trip from B to B
+• app calculates 7 as number of routes from C to C with distance less than 30
+
+
+Specified
+• app calculates distance along a route
+• app calculates shortest distance between two towns
+• app calculates all routes between two towns
+
+Expected Output
+• app reads input file
+• app creates adjacency matrix
+• app calculates distance along a route
+• app calculates shortest distance between two towns
+• app calculates all routes between two towns
+• app calculates all routes with max number of stops
+• app calculates all routes with exact number of stops
+• app returns count of routes between two towns with max stops
+• app returns count of routes between two towns with exact stops
+• app finds shortest route between two towns
+
+

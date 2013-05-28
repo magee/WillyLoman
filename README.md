@@ -34,7 +34,7 @@ rSpec
 
     gem install rSpec
 
-Then to run the tests, from the graph_problem folder type:
+Then to run the tests, from the WillyLoman root folder type:
 
     rake rspec
 

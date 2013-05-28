@@ -30,10 +30,9 @@ If the system returns a value rather than an error you already have it installed
 
 To validate that the code works, you can run the included tests.  To do so, the following gems should be installed for this project:
 
-*  rSpec
+rSpec
 
-    $ gem install rSpec
-*
+    gem install rSpec
 
 Then to run the tests, from the graph_problem folder type:
 

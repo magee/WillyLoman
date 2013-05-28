@@ -22,8 +22,10 @@ Assumptions
 Installing the App
 -----------------
 
-Check to make sure Ruby is installed on your system.  Type :  
+Check to make sure Ruby is installed on your system.  Type :
+
     $ ruby -v
+
 If the system returns a value rather than an error you already have it installed.  (e.g. ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-darwin12.2.1])  Otherwise, download Ruby from www.ruby-lang.org.
 
 To validate that the code works, you can run the included tests.  To do so, the following gems should be installed for this project:

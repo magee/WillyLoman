@@ -1,13 +1,11 @@
 class Path
 
-  @start_town
-  @connected_town
-  @distance
+  attr_reader :start, :terminus, :distance
 
-  def initialize path_start, path_end, distance
-    @start_town = path_start
-    @connected_town = path_end
-    @distance = distance
-    self
+  def add start, terminus, distance
+    @start       = start
+    @terminus    = terminus
+    @distance    = distance
   end
+
 end

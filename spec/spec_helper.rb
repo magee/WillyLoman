@@ -1,4 +1,7 @@
 require_relative '../schedule'
+require_relative '../path'
+require_relative '../app'
+
 require 'rspec'
 
   RSpec.configure do |config|

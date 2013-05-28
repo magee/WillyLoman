@@ -1,55 +1,188 @@
+require './schedule'
+require './path'
+
+
+class App
+
+  Schedule.send("public", :distance)
+
+  @schedule = Schedule.new
+  @answer
+
+  def query_user
+
+    prompt_user     # ask user what info she wants to receive
+    parse_input     # process input and assign local variables appropriately
+
+    case @command
+      when 'd' || 'distance'
+        if (@start) then
+          if (!@terminus) then
+            @route = @start.split(/-/)      #in this case @start is the route provided in form of 'A-D-E...'
+            @answer = @schedule.distance @route
+          else
+            @answer = @schedule.distance [@start, @terminus]
+          end
+          puts @answer
+        else
+          throw_error
+        end
+      when 'c' || 'count'
+        if (@start && @terminus) then
+          if (count_type == "max" || count_type == "exact") then
+            @answer = @schedule.count_of_hops @start, @terminus, count_type || nil, threshold || nil
+          else
+            puts "Invalid options. Valid entries are 'max', 'exact' or nothing.  You entered #{@query[3]}.\n\n"
+          end
+          puts @answer
+        else
+          throw_error
+        end
+      when 's' || 'shortest'
+        if (@start && @terminus) then
+          @answer = @schedule.shortest_route @query[1], @query[2]
+          puts @answer
+        else
+          throw_error
+        end
+      else
+        throw_error
+    end
+
+    puts "\n\nThank you for using the Railroad @Scheduler!"
+  end
+
+  def prompt_user
+    puts "\n\nTrain @scheduler lets you find paths between cities, their distances and total hops.  \nGiven a city 'a' and a city 'b, available commands are: \n\n(d)istance a b\t\t\t\t(e.g.   'd e a' - distance from e to a -or- \n\t\t\t\t\t\t'distance c d' - distance from c to d)\n\n(d)istance <path>\t\t\t<path> is string in form of 'A-B-...-D' \n\n\t\t\t\t\t(e.g.   'd A-D-F' - distance from A to F through D)\n\n(s)hortest a b\t\t\t\t(e.g.   'shortest f c' - shortest route from f to c)\n\n(c)ount a b [exact n|max n]\t\t(e.g.   'count b c max 4' - count of routes from b to c \n\t\t\t\t\t\t with 4 or fewer stops -or- \n\n\t\t\t\t\t\t'c d a' - count of stops from d to a)\n\n"
+    puts "What information would you like? "
+  end
+
+  def throw_error
+    puts "Invalid command.  Please try again.\n\n"
+  end
+
+  def parse_input
+    catch(:error) do
+      @query = gets.chomp
+      @query = @query.split(/,*\ */)
+
+      if (@query[0]) then
+        @command = @query[0].downcase
+      else
+        throw_error
+        throw :error
+      end
+
+      if (@query[1]) then
+        @start = @query[1].downcase
+      else
+        throw_error
+        throw :error
+      end
+
+      if (@query[2]) then
+        @terminus = @query[2].downcase
+      else
+        throw_error
+        throw :error
+      end
+
+      if (@query[3] && !@query[4]) then
+        throw_error
+        throw :error
+      end
+
+      if (@query[3] && @query [4]) then
+        count_type = @query[3].downcase
+        threshold = @query[4]
+      end
+    end
+  end
+end
+
+@go = App.new
+@go.query_user
+
+class Schedule
+
+  attr_accessor :towns, :paths, :data, :distance, :shortest_route, :count_of_routes
+
+  def initialize
+    @towns = load_data  # populate data structures with file data
+    @constraint = {
+        :nil    => '# return all routes',
+        :max    => '#find all up to a max of n hops',
+        :exact  => '#find routes of exactly n hops'
+    }
+  end
+
+  def shortest_route first, last
+    0
+  end
+
+  def distance route
+    0
+  end
+
+  def find_all_routes first, last
+    #TODO
+    [["route","hops"],["route","hops"]]
+  end
+
+  def count_of_hops first, last
+    (find_all_routes first, last).length
+  end
+
+  def count_of_routes first, last, results = nil, count = nil
+    if (results) then
+
+    end
+    find_all_routes(first, last).length #add filter that specifies exact
+  end
+
+end
+
+def load_data
+
+  @adjacency_list = Hash.new
+  @paths = []
+
+  def init_list
+    @obj.each {|item|
+      item.strip!
+      @adjacency_list[item.split(//,3)[0]] = Hash.new
+    }
+  end
+
+  def parse_data
+    @obj.each do |path|
+      path_data = path.split(//,3)
+      add_path path_data[0], path_data[1], path_data[2]
+    end
+  end
+
+  def add_path start, destination, distance
+    path = Path.new
+    path.add start, destination, distance
+    @paths.push(path)
+  end
+
+  @obj = read_graph_data
+  init_list
+  parse_data
+
+  @adjacency_list
+end
+
+def read_graph_data
+  f = File.new 'spec/graph_data.txt'
+  @obj = f.gets
+  f.close
+  puts 'the following schedule was loaded: ', @obj.to_s
+  @obj = @obj.split(/,\ */)
+end
+
 =begin
-//
-PLEASE USE THE URL BELOW TO SUBMIT YOUR CODE:
-http://jobs.thoughtworks.com/DataCompletionRequest?uid=5iFxMPm1DSexJJi8
- 
-As a general rule, we allow one week from the date that you receive this letter to submit your code, but you may request more time from your recruiter if needed.  If you have any questions about the code as it relates to your interview process, please contact your recruiter.
- 
-ThoughtWorks would like the opportunity to offer you a challenging career with our dynamic team. We wish you luck and look forward to receiving your response.
- 
-INTRODUCTION TO THE PROBLEMS
-
-There must be a way to supply the application with the input data via text file. The application must run. You should provide sufficient evidence that your solution is complete by, as a minimum, indicating that it works correctly against the supplied test data. Please note that you will be assessed on your judgment as well as your execution.
-
-
-PROBLEM ONE: TRAINS
-
-Problem:  The local commuter railroad services a number of towns in Kiwiland.  Because of monetary concerns, all of the tracks are 'one-way.'  That is, a route from Kaitaia to Invercargill does not imply the existence of a route from Invercargill to Kaitaia.  In fact, even if both of these routes do happen to exist, they are distinct and are not necessarily the same distance!
-
-The purpose of this problem is to help the railroad provide its customers with information about the routes.  In particular, you will compute the distance along a certain route, the number of different routes between two towns, and the shortest route between two towns.
-
-Input:  A directed graph where a node represents a town and an edge represents a route between two towns.  The weighting of the edge represents the distance between the two towns.  A given route will never appear more than once, and for a given route, the starting and ending town will not be the same town.
-
-Output: For test input 1 through 5, if no such route exists, output 'NO SUCH ROUTE'.  Otherwise, follow the route as given; do not make any extra stops!  For example, the first problem means to start at city A, then travel directly to city B (a distance of 5), then directly to city C (a distance of 4).
-
-1. The distance of the route A-B-C.
-2. The distance of the route A-D.
-3. The distance of the route A-D-C.
-4. The distance of the route A-E-B-C-D.
-5. The distance of the route A-E-D.
-6. The number of trips starting at C and ending at C with a maximum of 3 stops.  In the sample data below, there are two such trips: C-D-C (2 stops). and C-E-B-C (3 stops).
-7. The number of trips starting at A and ending at C with exactly 4 stops.  In the sample data below, there are three such trips: A to C (via B,C,D); A to C (via D,C,D); and A to C (via D,E,B).
-8. The length of the shortest route (in terms of distance to travel) from A to C.
-9. The length of the shortest route (in terms of distance to travel) from B to B.
-10. The number of different routes from C to C with a distance of less than 30.  In the sample data, the trips are: CDC, CEBC, CEBCDC, CDCEBC, CDEBC, CEBCEBC, CEBCEBCEBC.
-
-Test Input:
-
-For the test input, the towns are named using the first few letters of the alphabet from A to E.  A route between two towns (A to B) with a distance of 5 is represented as AB5.
-
-Graph: AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
-
-Expected Output:
-
-Output #1: 9
-Output #2: 5
-Output #3: 13
-Output #4: 22
-Output #5: NO SUCH ROUTE
-Output #6: 2
-Output #7: 3
-Output #8: 9
-Output #9: 9
-Output #10: 7
- ===========end
-
+  def ldap_get(base_dn, filter, scope = nil, attrs = nil)
+  binding.Pry
+=end

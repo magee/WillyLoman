@@ -1,63 +1,89 @@
-require 'csv'
 require './path'
-
-=begin
-  def method_missing name, *args, &block
-  end
-=end
 
 class Schedule
 
-  attr_accessor :towns, :paths, :data
-
-  @data = Hash.new      # holds raw graph data from text file
-  @paths                # used to define nodes in town neighbor arrays
+  attr_accessor :towns, :paths, :data, :distance, :shortest_route, :count_of_routes
 
   def initialize
-    @towns = Hash.new   # towns are graph vertices
-    load_data           # read graph data from file
-    init_towns          # populate towns obj with unique nodes in graph
-    add_paths
-  end
-
-  def load_data
-    f = File.new('spec/graph_data.txt')
-    @data = CSV.parse_line(f.read)
-    f.close
-    puts 'the following schedule was loaded: ', @data.to_s
-    @data
-  end
-
-  def parse_input
-    @data = CSV.parse_line(@data)
-    puts @data.is_a?(Array)
-    @data
-  end
-
-  def init_towns
-    @data.each {|town|
-      town.strip!
-      @towns[town.split(//,3)[0]] = Hash.new
+    @towns = load_data  # populate data structures with file data
+    @constraint = {
+        :nil    => '# return all routes',
+        :max    => '#find all up to a max of n hops',
+        :exact  => '#find routes of exactly n hops'
     }
   end
 
-  def add_paths
-    true
+  def shortest_route first, last
+    0
   end
 
-=begin
-  class Town
-    def initialize(name)
-      @towns.name = name
-      @routes = {}
+  def distance route
+    0
+  end
+
+  def find_all_routes first, last
+    #TODO
+    [["route","hops"],["route","hops"]]
+  end
+
+  def count_of_hops first, last
+    (find_all_routes first, last).length
+  end
+
+  def count_of_routes first, last, results = nil, count = nil
+    if (results) then
+
     end
-
+    find_all_routes(first, last).length #add filter that specifies exact
   end
-=end
-=begin
-    binding.Pry
-=end
 
 end
 
+def load_data
 
+  @adjacency_list = Hash.new
+  @paths = []
+
+  def init_list
+    @obj.each {|item|
+      item.strip!
+      @adjacency_list[item.split(//,3)[0]] = Hash.new
+    }
+  end
+
+  def parse_data
+    @obj.each do |path|
+      path_data = path.split(//,3)
+      add_path path_data[0], path_data[1], path_data[2]
+    end
+  end
+
+  def add_path start, destination, distance
+    path = Path.new
+    path.add start, destination, distance
+    @paths.push(path)
+  end
+
+  @obj = read_graph_data
+  init_list
+  parse_data
+
+  @adjacency_list
+end
+
+def is_stop? stop
+  @towns[stop]
+end
+
+def read_graph_data
+  f = File.new 'spec/graph_data.txt'
+  @obj = f.gets
+  f.close
+  puts 'the following schedule was loaded: ', @obj.to_s
+  @obj = @obj.split(/,\ */)
+end
+
+=begin
+  def ldap_get(base_dn, filter, scope = nil, attrs = nil)
+  binding.Pry
+=end

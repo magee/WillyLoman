@@ -6,10 +6,12 @@ Stack:
   2.  test framework:  rSpec
   3.  pry: debugging
 
-Approach
+Problem
 ----------------------------
 
-Data Structure: I am using an adjacency matrix to record the connections between vertices (towns) and the relative weights (distances) between them.
+Create a travel network consisting of a number of towns with one way paths between them -- a directed graph.  Identify shortest routes, number of routes, number of hops (towns) to get from point A to point B), etc.
+
+Data Structure: I could use an adjacency matrix or an adjacency list to manage the graph data.  I chose to use an adjacency matrix to record the connections between vertices (towns) and the relative weights (distances) between them.
 
 Assumptions
 -----------------

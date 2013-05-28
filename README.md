@@ -38,5 +38,5 @@ rSpec
 
 Then to run the tests, from the WillyLoman root folder type:
 
-    rake rspec
+    rspec
 

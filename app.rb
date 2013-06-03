@@ -2,10 +2,10 @@
 require './graph'
 
 
-@graph = Graph.new
-@graph.towns = {}
-
 class App
+
+  @@graph ||= Graph.new
+  @@graph.towns ||= {}
 
   @answer
 
@@ -22,11 +22,11 @@ class App
         # remove empty element created if input provided in single or double quotes
         if (@route[0] == "") then @route.shift end
 
-        @answer = distance @route
+        @answer = @@graph.distance @route
       when 'count'
-        @answer = @graph.count_of_hops @start, @terminus, count_type || nil, threshold || nil
+        @answer = @@graph.count_of_hops @start, @terminus, count_type || nil, threshold || nil
       when 'shortest'
-        @answer = @graph.shortest_route @query[1], @query[2]
+        @answer = @@graph.shortest_route @query[1], @query[2]
       else
         puts "case statement error"
         throw_error

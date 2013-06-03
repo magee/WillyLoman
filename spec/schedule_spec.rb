@@ -1,7 +1,7 @@
 require 'rspec'
-require_relative '../schedule'
+require_relative '../graph'
 
-describe Schedule do
+describe Graph do
 
   before(:all) do
     File.open 'spec/graph_data.txt', 'w' do |f|
@@ -9,75 +9,67 @@ describe Schedule do
       f.close
     end
 
-    @schedule = Schedule.new
+    @graph = Graph.new
 
   end
 
   it 'should read data from file' do
-    @schedule.towns.length.should_not equal(0)
-  end
-
-  it 'should have 5 unique towns' do
-    @schedule.towns.length.should equal(5)
+    @graph.towns.length.should eq(5)
   end
 
   it 'should add all paths for each town' do
-    #TODO
+    @path = @graph.towns["A"]
+    expect(@path.length).to eq(3)
+    @path = @graph.towns["B"]
+    expect(@path.length).to eq(1)
+    @path = @graph.towns["C"]
+    expect(@path.length).to eq(2)
+    @path = @graph.towns["D"]
+    expect(@path.length).to eq(2)
+    @path = @graph.towns["E"]
+    expect(@path.length).to eq(1)
   end
 
   it 'should tell how many exact routes from A to B' do
     # TODO: correct tests
-    expect(@schedule.count_of_routes "C", "C").to equal(2)
-    expect(@schedule.count_of_routes "C", "D").to equal(2)
-    expect(@schedule.count_of_routes "A", "D").to equal(2)
-    expect(@schedule.count_of_routes "E", "A").to equal(2)
+    expect(@graph.count_of_routes "C", "C").to eq(2)
+    expect(@graph.count_of_routes "C", "D").to eq(2)
+    expect(@graph.count_of_routes "A", "D").to eq(2)
+    expect(@graph.count_of_routes "E", "A").to eq(2)
 =begin
-    expect(@schedule.count_of_routes "C", "C").to equal(0)
-    expect(@schedule.count_of_routes "C", "D").to equal(0)
-    expect(@schedule.count_of_routes "A", "D").to equal(0)
-    expect(@schedule.count_of_routes "E", "A").to equal(0)
+    expect(@graph.count_of_routes "C", "C").to equal(0)
+    expect(@graph.count_of_routes "C", "D").to equal(0)
+    expect(@graph.count_of_routes "A", "D").to equal(0)
+    expect(@graph.count_of_routes "E", "A").to equal(0)
 =end
   end
 
   it 'should provide a shortest_route between two cities' do
-    @schedule.towns.length.should equal(5)
+    @graph.towns.length.should equal(5)
   end
 
   it 'should calculate the distance of a given route' do
     # TODO: correct tests
-    expect(@schedule.distance "A-B-C").to equal(0)
-    expect(@schedule.distance "A-D").to equal(0)
-    expect(@schedule.distance "A-D-C").to equal(0)
-    expect(@schedule.distance "A-E-B-C-D").to equal(0)
-    expect(@schedule.distance "A-E-D").to equal(0)
+
 =begin
-    expect(@schedule.distance "A-B-C").to equal(9)
-    expect(@schedule.distance "A-D").to equal(5)
-    expect(@schedule.distance "A-D-C").to equal(13)
-    expect(@schedule.distance "A-E-B-C-D").to equal(22)
-    expect(@schedule.distance "A-E-D").to equal("NO SUCH ROUTE")
+    expect(@graph.distance "A-B-C").to eq(0)
+    expect(@graph.distance "A-D").to eq(0)
+    expect(@graph.distance "A-D-C").to eq(0)
+    expect(@graph.distance "A-E-B-C-D").to eq(0)
+    expect(@graph.distance "A-E-D").to eq(0)
 =end
+
+    expect(@graph.distance "A-B-C").to eq(9)
+    expect(@graph.distance "A-D").to eq(5)
+    expect(@graph.distance "A-D-C").to eq(13)
+    expect(@graph.distance "A-E-B-C-D").to eq(22)
+    expect(@graph.distance "A-E-D").to eq("NO SUCH ROUTE")
+
   end
 
   it 'should provide all routes between two cities' do
-    @schedule.towns.length.should equal(5)
+    @graph.towns.length.should equal(5)
   end
 
-=begin
-  it 'should read all paths' do
-    @schedule.data.length.should equal(9)
-  end
-=end
 
-  it 'should add path instances to paths collection' do
-    expect(@schedule.paths.length).to eq(9)
-  end
-
-  it 'should add all paths to towns hash' do
-    @schedule.add_path "A", "B", 7
-    @schedule.add_path "C", "D", 8
-    @schedule.add_path "D", "C", 8
-    @schedule.parse_data
-
-  end
 end

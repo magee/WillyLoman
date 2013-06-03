@@ -1,12 +1,12 @@
-require './schedule'
-require './path'
 
+require './graph'
+
+
+@graph = Graph.new
+@graph.towns = {}
 
 class App
 
-  Schedule.send("public", :distance)
-
-  @schedule = Schedule.new
   @answer
 
   def query_user
@@ -15,174 +15,117 @@ class App
     parse_input     # process input and assign local variables appropriately
 
     case @command
-      when 'd' || 'distance'
-        if (@start) then
-          if (!@terminus) then
-            @route = @start.split(/-/)      #in this case @start is the route provided in form of 'A-D-E...'
-            @answer = @schedule.distance @route
-          else
-            @answer = @schedule.distance [@start, @terminus]
-          end
-          puts @answer
-        else
-          throw_error
-        end
-      when 'c' || 'count'
-        if (@start && @terminus) then
-          if (count_type == "max" || count_type == "exact") then
-            @answer = @schedule.count_of_hops @start, @terminus, count_type || nil, threshold || nil
-          else
-            puts "Invalid options. Valid entries are 'max', 'exact' or nothing.  You entered #{@query[3]}.\n\n"
-          end
-          puts @answer
-        else
-          throw_error
-        end
-      when 's' || 'shortest'
-        if (@start && @terminus) then
-          @answer = @schedule.shortest_route @query[1], @query[2]
-          puts @answer
-        else
-          throw_error
-        end
+      when 'distance'
+        # TODO modify regex to handle quotes
+        @route = @start.split(/[-'"]/)      # @start is the route provided in form of 'A-D-E...'
+
+        # remove empty element created if input provided in single or double quotes
+        if (@route[0] == "") then @route.shift end
+
+        @answer = distance @route
+      when 'count'
+        @answer = @graph.count_of_hops @start, @terminus, count_type || nil, threshold || nil
+      when 'shortest'
+        @answer = @graph.shortest_route @query[1], @query[2]
       else
+        puts "case statement error"
         throw_error
     end
 
-    puts "\n\nThank you for using the Railroad @Scheduler!"
+    puts "\n\nThank you for using the Railroad Grapher!"
   end
 
   def prompt_user
-    puts "\n\nTrain @scheduler lets you find paths between cities, their distances and total hops.  \nGiven a city 'a' and a city 'b, available commands are: \n\n(d)istance a b\t\t\t\t(e.g.   'd e a' - distance from e to a -or- \n\t\t\t\t\t\t'distance c d' - distance from c to d)\n\n(d)istance <path>\t\t\t<path> is string in form of 'A-B-...-D' \n\n\t\t\t\t\t(e.g.   'd A-D-F' - distance from A to F through D)\n\n(s)hortest a b\t\t\t\t(e.g.   'shortest f c' - shortest route from f to c)\n\n(c)ount a b [exact n|max n]\t\t(e.g.   'count b c max 4' - count of routes from b to c \n\t\t\t\t\t\t with 4 or fewer stops -or- \n\n\t\t\t\t\t\t'c d a' - count of stops from d to a)\n\n"
+    puts "\n\nTrain Grapher lets you find paths between cities, their distances and total hops.  \nGiven a city 'a' and a city 'b, available commands are: \n\n(d)istance <path>\t\t\t<path> is a route defined as 'A-B' for two directly connected \n\t\t\t\t\tcities or 'A-C-E-B' for a specific route from A to B \n\t\t\t\t\t(e.g.   'd A-D-F' - distance from A to F through D)\n\n(s)hortest a b\t\t\t\t(e.g.   'shortest f c' - shortest route from f to c)\n\n(c)ount a b [exact n|max n]\t\t(e.g.   'count b c max 4' - count of routes from b to c \n\t\t\t\t\t\t with 4 or fewer stops -or- \n\t\t\t\t\t\t'c d a' - count of stops from d to a)\n\n"
     puts "What information would you like? "
   end
 
   def throw_error
-    puts "Invalid command.  Please try again.\n\n"
+    puts "\n\nInvalid command.  Please try again.\n\n"
+    throw :error
   end
 
+  # Evaluates arguments passed, throws errors if they are incorrect.
+  # Otherwise, assigns arguments to local variables
   def parse_input
+
+    # defines permitted commands and converts shortcuts into full commands
+    commands = {
+      'd' => 'distance',
+      'distance' => 'distance',
+      'c' => 'count',
+      'count' => 'count',
+      's' => 'shortest',
+      'shortest' => 'shortest'
+    }
+
     catch(:error) do
       @query = gets.chomp
-      @query = @query.split(/,*\ */)
+      # TODO fix regex to strip quotes
+      @query = @query.split(/,*\ /)
 
-      if (@query[0]) then
-        @command = @query[0].downcase
+      if (commands[@query[0].downcase]) then
+        @command = commands[@query[0].downcase]
       else
+        puts "command error"
         throw_error
-        throw :error
       end
 
+      # all supported commands require at least one argument
       if (@query[1]) then
         @start = @query[1].downcase
       else
+        puts "first argument error"
         throw_error
-        throw :error
       end
 
+      # optional argument required for Count and Shortest but not for Distance
       if (@query[2]) then
-        @terminus = @query[2].downcase
-      else
+        if @command == 'd' || @command == 'distance' then
+          puts "extra argument for distance command"
+          throw_error
+        else
+          @terminus = @query[2].downcase
+        end
+      elsif @command != 'd' && @command != 'distance' then
+        puts "missing argument for command"
         throw_error
-        throw :error
       end
 
-      if (@query[3] && !@query[4]) then
-        throw_error
-        throw :error
-      end
-
-      if (@query[3] && @query [4]) then
+      # @query[3] && @query[4] are optional
+      if (@query[3] && @query[4]) then
         count_type = @query[3].downcase
         threshold = @query[4]
+
+        if (count_type != "max" && count_type != "exact") then
+          puts "Invalid options. Valid entries are 'max', 'exact' or nothing.  You entered #{@query[3]}.\n\n"
+          throw :error
+        end
+      end
+
+      # But if @query[3] is passed there must be a @query[4] value
+      if (@query[3] && !@query[4]) then
+        # if the third parameter (exact||max) is provided, the fourth must be also
+        puts "a value is required when passing " + @query[3]
+        throw_error
       end
     end
   end
 end
 
+
 @go = App.new
-@go.query_user
-
-class Schedule
-
-  attr_accessor :towns, :paths, :data, :distance, :shortest_route, :count_of_routes
-
-  def initialize
-    @towns = load_data  # populate data structures with file data
-    @constraint = {
-        :nil    => '# return all routes',
-        :max    => '#find all up to a max of n hops',
-        :exact  => '#find routes of exactly n hops'
-    }
-  end
-
-  def shortest_route first, last
-    0
-  end
-
-  def distance route
-    0
-  end
-
-  def find_all_routes first, last
-    #TODO
-    [["route","hops"],["route","hops"]]
-  end
-
-  def count_of_hops first, last
-    (find_all_routes first, last).length
-  end
-
-  def count_of_routes first, last, results = nil, count = nil
-    if (results) then
-
-    end
-    find_all_routes(first, last).length #add filter that specifies exact
-  end
-
+test = {
+  'one'   => 1,
+  'two'   => 2,
+  'three' => 3,
+  'four'  => 4
+}
+puts test.keys
+puts test.values
+catch(:error) do
+#  @go.query_user
 end
 
-def load_data
 
-  @adjacency_list = Hash.new
-  @paths = []
 
-  def init_list
-    @obj.each {|item|
-      item.strip!
-      @adjacency_list[item.split(//,3)[0]] = Hash.new
-    }
-  end
-
-  def parse_data
-    @obj.each do |path|
-      path_data = path.split(//,3)
-      add_path path_data[0], path_data[1], path_data[2]
-    end
-  end
-
-  def add_path start, destination, distance
-    path = Path.new
-    path.add start, destination, distance
-    @paths.push(path)
-  end
-
-  @obj = read_graph_data
-  init_list
-  parse_data
-
-  @adjacency_list
-end
-
-def read_graph_data
-  f = File.new 'spec/graph_data.txt'
-  @obj = f.gets
-  f.close
-  puts 'the following schedule was loaded: ', @obj.to_s
-  @obj = @obj.split(/,\ */)
-end
-
-=begin
-  def ldap_get(base_dn, filter, scope = nil, attrs = nil)
-  binding.Pry
-=end

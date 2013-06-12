@@ -1,4 +1,6 @@
 require 'rspec'
+require 'spec_helper'
+require_relative '../graphdata'
 require_relative '../graph'
 
 describe Graph do
@@ -7,11 +9,15 @@ describe Graph do
     @graph = Graph.new
   end
 
-  it 'should read data from file' do
+  it 'reads data from text file' do
     expect(@graph.number_of_towns).to equal(5)
   end
 
-  it 'should add all paths for each town' do
+  it 'reads data from file' do
+    expect(@graph.number_of_towns).to equal(5)
+  end
+
+  it 'adds all paths for each town' do
     @path = @graph.number_of_neighbors "A"
     expect(@path).to eq(3)
 
@@ -28,7 +34,7 @@ describe Graph do
     expect(@path).to eq(1)
   end
 
-  it 'should calculate the distance of a given route' do
+  it 'calculates the distance of a given route' do
     expect(@graph.distance ["A", "B", "C"]).to eq(9)
     expect(@graph.distance ["A", "D"]).to eq(5)
     expect(@graph.distance ["A", "D", "C"]).to eq(13)
@@ -55,12 +61,12 @@ describe Graph do
 # =end
 #   end
 
-#   it 'should provide a shortest_route between two cities' do
+#   it 'provides the shortest_route between two cities' do
 #     @graph.towns.length.should equal(5)
 #   end
 
 
-  # it 'should provide all routes between two cities' do
+  # it 'provides all routes between two cities' do
   #   @graph.towns.length.should equal(5)
   # end
 

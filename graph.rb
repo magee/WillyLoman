@@ -15,6 +15,10 @@ class Graph
     @@towns.length
   end
 
+  def number_of_paths
+    count_of_routes
+  end
+
   def number_of_neighbors town
     @@towns[town].length
   end

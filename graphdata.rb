@@ -72,29 +72,11 @@ module GraphData
     adjacencyMatrix = Hash.new
     uniqueTowns = GraphData.getUniqueTowns data
 
-    # example: data = ["2EC", "3BE", "4CB", "5BA", "5DA", "6ED", "7EA", "8CD", "8DC"]
-    data.each {|item|
-
-
-=begin
-      if  !adjacencyMatrix[item[2]][item[1]] then
-           adjacencyMatrix[item[2]][item[1]] = item[0].to_i
-      else
-        puts "error: ", adjacencyMatrix[item[2]]
-        # throw error - out of scope
-      end
-=end
-    }
-
+    # initialize matrix with nils (rather than Infinity)
     adjacencyMatrix = GraphData.initializeSquareMatrix uniqueTowns
-    puts "init matrix: #{adjacencyMatrix.to_s}"
-    temp = adjacencyMatrix
 
-    #puts "final matrix: #{adjacencyMatrix.to_s}"
+    # fill matrix with values from user data
     adjacencyMatrix = GraphData.fillMatrix adjacencyMatrix, data
-
-    temp
-
   end
 
   # learn the correct way of doing this so it can be inside

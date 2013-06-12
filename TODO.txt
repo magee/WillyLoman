@@ -1,13 +1,4 @@
-• Code-breaker starts game
-• Code-breaker submits guess
-• Code-breaker wins game
-• Code-breaker loses game
-• Code-breaker plays again
-• Code-breaker requests hint
-• Code-breaker saves score
-
-• app starts schedule
-• app reads input file
+TODO
 • app provides error message if input file not found
 • app provides error message if a duplicate route is found
 • app creates adjacency matrix
@@ -31,12 +22,12 @@
 
 
 Specified
-• app calculates distance along a route
+X app calculates distance along a route
 • app calculates shortest distance between two towns
 • app calculates all routes between two towns
 
 Expected Output
-• app reads input file
+X app reads input file
 • app creates adjacency matrix
 • app calculates distance along a route
 • app calculates shortest distance between two towns
@@ -45,6 +36,4 @@ Expected Output
 • app calculates all routes with exact number of stops
 • app returns count of routes between two towns with max stops
 • app returns count of routes between two towns with exact stops
-• app finds shortest route between two towns
-
 

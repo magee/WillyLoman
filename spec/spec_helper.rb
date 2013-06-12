@@ -1,4 +1,5 @@
-require_relative '../schedule'
+require_relative '../graph'
+require_relative '../graphdata'
 require_relative '../path'
 require_relative '../app'
 

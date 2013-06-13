@@ -1,4 +1,4 @@
-NP Hard Graph Exercise
+Pathfinding Exercise
 ===============================
 
 Stack:

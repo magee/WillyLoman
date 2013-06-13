@@ -2,6 +2,7 @@ module InputData
 
   attr_reader :userInput
 
+  # TODO: make error handling more seamless
   # informal error handling for exercise
   def InputData.throw_error
     puts "\n\nInvalid command.  Please try again.\n\n"
@@ -15,7 +16,7 @@ module InputData
 
   # Evaluates arguments passed, throws errors if they are incorrect.
   # Otherwise, assigns arguments to local variables
-  def InputData.getUserInput
+  def InputData.userInput
     catch(:error) do
       puts "\n\nTrain Grapher lets you find paths between cities, their distances and total hops.  \nGiven a city 'a' and a city 'b, available commands are: \n\n(d)istance <path>\t\t\t<path> is a route defined as 'A-B' for two directly connected \n\t\t\t\t\tcities or 'A-C-E-B' for a specific route from A to B \n\t\t\t\t\t(e.g.   'd A-D-F' - distance from A to F through D)\n\n(s)hortest a b\t\t\t\t(e.g.   'shortest f c' - shortest route from f to c)\n\n(c)ount a b [exact n|max n]\t\t(e.g.   'count b c max 4' - count of routes from b to c \n\t\t\t\t\t\t with 4 or fewer stops -or- \n\t\t\t\t\t\t'c d a' - count of stops from d to a)\n\n"
       puts "What information would you like? "
@@ -54,12 +55,11 @@ module InputData
 
     # all supported commands require at least one argument
     if (@query[1]) then
-      input["start"] = @query[1].upcase!  #for all commands but distance
+      input["start"] = @query[1].upcase  #used by all commands but distance
 
       # if command is distance, make sure route is correctly formatted
       if @command == 'd' || 'distance' then
         input["route"] = input["start"].split(/-/)  #for distance commands
-        input["route"].each do |town| town.upcase! end
       else
         InputData.throw_error
       end
@@ -74,7 +74,7 @@ module InputData
         puts "extra argument for distance command"
         InputData.throw_error
       else
-        input["terminus"] = @query[2].upcase!
+        input["target"] = @query[2].upcase
       end
     elsif input["command"] != 'distance' then
       puts "missing argument for command"

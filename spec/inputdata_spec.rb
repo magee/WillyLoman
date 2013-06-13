@@ -16,7 +16,7 @@ describe InputData do
     data = InputData.processInput "d a-b-c-d"
     expect(data).to eq({"command"=>"distance", "start"=>"A-B-C-D", "route"=>["A", "B", "C", "D"]})
     data = InputData.processInput "c c d"
-    expect(data).to eq({"command"=>"count", "start"=>"C", "route"=>["C"], "terminus"=>"D"})
+    expect(data).to eq({"command"=>"count", "start"=>"C", "route"=>["C"], "target"=>"D"})
   end
 
   #TODO: add more input error testing

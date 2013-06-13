@@ -61,16 +61,16 @@ describe GraphData do
     list.each do |entry|
       expect(entry[1]).to be_a(Hash)
     end
-    expect(list["A"].to_s).to eq('{"C"=>nil, "E"=>nil, "B"=>nil, "A"=>nil, "D"=>nil}')
+    expect(list["A"].to_s).to eq('{"C"=>Infinity, "E"=>Infinity, "B"=>Infinity, "A"=>Infinity, "D"=>Infinity}')
   end
 
   it 'returns a populated adjacencyMatrix' do
     list = Hash.new
     list = GraphData.adjacencyMatrix GraphData.pathData
 
-    expect(list["A"].to_s).to eq('{"C"=>nil, "E"=>7, "B"=>5, "A"=>nil, "D"=>5}')
-    expect(list["C"].to_s).to eq('{"C"=>nil, "E"=>2, "B"=>nil, "A"=>nil, "D"=>8}')
-    expect(list["E"].to_s).to eq('{"C"=>nil, "E"=>nil, "B"=>3, "A"=>nil, "D"=>nil}')
+    expect(list["A"].to_s).to eq('{"C"=>Infinity, "E"=>7, "B"=>5, "A"=>Infinity, "D"=>5}')
+    expect(list["C"].to_s).to eq('{"C"=>Infinity, "E"=>2, "B"=>Infinity, "A"=>Infinity, "D"=>8}')
+    expect(list["E"].to_s).to eq('{"C"=>Infinity, "E"=>Infinity, "B"=>3, "A"=>Infinity, "D"=>Infinity}')
   end
 
   it 'returns the correct unique towns' do
@@ -81,9 +81,6 @@ describe GraphData do
 
   it 'parses input data correctly' do
     list = Hash.new
-    puts "pathdata: ", GraphData.pathData.to_s
-    puts "list: ", (GraphData.adjacencyList GraphData.pathData).to_s
-
     list = GraphData.adjacencyList GraphData.pathData
     list.length.should equal(5)
 

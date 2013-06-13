@@ -1,5 +1,5 @@
 require './graphdata'
-require './dyjkstra'
+require './dijkstra'
 
 class Graph
 
@@ -24,8 +24,9 @@ class Graph
   end
 
   def shortest_route first, last
-    finder = Dyjkstra.new @@towns, "adjacencyList"
-    0
+    puts "running shortest_route"
+    finder = Dijkstra.new @@towns, "adjacencyList"
+    finder.findShortest first, last
   end
 
   # accepts variable length routes as strings in form "A-B"
@@ -77,7 +78,7 @@ class Graph
   end
 
   def count_of_stops first, last, count_type, threshold
-    (find_all_routes first, last).length
+    (all_routes_between first, last).length
   end
 
   # optimize by executing all_routes_between using results and count
@@ -88,6 +89,7 @@ class Graph
       "exact"  => '#find routes of exactly n hops'
     }
 
+    # TODO:
     if (@constraint[results]) then    # legitimate value for results parameter
 
     end

@@ -1,10 +1,11 @@
+# TODO: refactor to use Path classes and Node classes
 class Path
 
-  attr_reader :start, :terminus, :distance
+  attr_reader :start, :target, :distance
 
-  def add start, terminus, distance
+  def add start, target, distance
     @start       = start
-    @terminus    = terminus
+    @target    = target
     @distance    = distance
   end
 

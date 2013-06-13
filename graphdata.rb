@@ -10,6 +10,7 @@ module GraphData
     @pathData = GraphData.importCSV
   end
 
+
   # get file from external text file in 'spec/' folder returns
   # data array for "AB3, DC8" input formatted like ['AB3', 'DC8']
   def GraphData.importCSV file_name = "spec/graph_data.txt"
@@ -20,18 +21,19 @@ module GraphData
     # remove quotes and spaces from input file and put into an array
     data = data.gsub(/['"\ ]+/, '').split(/,/)
 
-    # user notification
-    puts 'the following schedule was loaded: ', data.to_s
-
     # put the distance first for sorting
     data.each do |item|
       item.reverse!
     end
 
+    # TODO: refactor.  Sorting isn't necessary any more.
+    # --------------------------------------------------
     # sorts array in asc order by path distances so lowest distance
     # paths are entered first in adjacency list value arrays
+    # sort has no effect on adjacency matrix population
     GraphData.extractPathData data.sort
   end
+
 
   # converts array of path strings (i.e. ['AB3', 'DC8']) into a
   # multi-dimensional array like: [['A','B','3'],['D','C','8']]
@@ -43,28 +45,30 @@ module GraphData
     }
   end
 
-  # data is an array of all paths read from a text file
+
+  # "data" is an array of all paths read from a text file
   def GraphData.adjacencyList data
-    adjacency_list = Hash.new
+    adjacencyList = Hash.new
 
     data.each {|item|
 
       # add town to the list hash and add an empty hash as its inital value
-      adjacency_list[item[2].upcase] ||= {}
+      adjacencyList[item[2].upcase] ||= {}
 
       # if path hasn't been added, add it.  If it exists already and new
       # distance != existing write error to console.  Otherwise, it's
       # a benign duplicate
-      if  !adjacency_list[item[2]][item[1]] then
-           adjacency_list[item[2]][item[1]] = item[0].to_i
+      if  !adjacencyList[item[2]][item[1]] then
+           adjacencyList[item[2]][item[1]] = item[0].to_i
       else
-        puts "error: ", adjacency_list[item[2]]
+        puts "error: ", adjacencyList[item[2]]
         # throw error - out of scope
       end
     }
 
-    adjacency_list
+    adjacencyList
   end
+
 
   # data is an array of all paths read from a text file
   def GraphData.adjacencyMatrix data
@@ -79,6 +83,7 @@ module GraphData
     adjacencyMatrix = GraphData.fillMatrix adjacencyMatrix, data
   end
 
+
   # learn the correct way of doing this so it can be inside
   # adjacency matrix method
   def GraphData.fillMatrix matrix, data
@@ -88,6 +93,7 @@ module GraphData
     matrix
   end
 
+
   def GraphData.initializeSquareMatrix nodeList
     matrix = Hash.new
 
@@ -95,12 +101,13 @@ module GraphData
     nodeList.sort.each {|rowNode|
       matrix[rowNode] = Hash.new
       nodeList.each {|columnNode|
-        matrix[rowNode][columnNode] = nil
+        matrix[rowNode][columnNode] = 1.0/0
       }
     }
 
     matrix
   end
+
 
   def GraphData.getUniqueTowns data
     townList = Hash.new

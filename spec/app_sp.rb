@@ -1,17 +1,14 @@
 require 'rspec'
 require 'spec_helper'
+require 'graphdata'
 require_relative '../app'
 
 describe App do
 
+  it 'reads data from text file' do
     @graph = Graph.new
-
+    @graph = GraphData.pathData
+    expect(@graph.number_of_towns).to equal(5)
   end
 
-=begin
-  it 'should read data from file' do
-    @graph.towns.length.should_not equal(0)
-  end
-
-=end
 end

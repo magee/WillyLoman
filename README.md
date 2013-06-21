@@ -6,8 +6,10 @@ Stack:
   2.  test framework:  rSpec
   3.  pry: debugging
 
-Problem One: Trains
+Problem: Trains
 ----------------------------
+
+Find shortest path between two towns, find all paths with n stops or n or fewer stops, find distance between two towns.  Write code in Ruby to answer all of those questions given a text file with graph paths (see below for format).  Use no libraries other than for testing or configuration management (bundling).
 
 For this exercise I am using an adjacency matrix to record the connections between vertices and the relative weights (distances) between them.  I used Depth-first-search to find all paths between towns and Dykstra algorithm to find shortest distance paths between town.  Path distances are calculated simply by alculating distance while travelling the specified path.
 
